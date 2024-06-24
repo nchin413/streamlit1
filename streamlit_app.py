@@ -44,10 +44,6 @@ st.write("### (3) show a line chart of sales for the selected items in (2)")
 # Filter the dataframe based on the selected sub-categories
 filtered_df = df[(df['Category'] == selected_category) & (df['Sub_Category'].isin(selected_sub_categories))]
 
-# Check if the 'Order_Date' column is in the filtered_df
-if "Order_Date" in filtered_df.columns:
-    filtered_df = filtered_df.set_index('Order_Date')
-
 # Create a line chart of sales for the selected sub-categories
 sales_by_month = filtered_df.groupby(pd.Grouper(freq='M', key='Order_Date'))['Sales'].sum()
 st.line_chart(sales_by_month)
