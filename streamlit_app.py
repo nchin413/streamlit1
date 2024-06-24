@@ -44,9 +44,15 @@ st.write("### (3) show a line chart of sales for the selected items in (2)")
 # Filter the dataframe based on the selected sub-categories
 filtered_df = df[(df['Category'] == selected_category) & (df['Sub_Category'].isin(selected_sub_categories))]
 
-# Create a line chart of sales for the selected sub-categories
-sales_by_month = filtered_df.groupby(pd.Grouper(freq='M', key='Order_Date'))['Sales'].sum()
-st.line_chart(sales_by_month)
+print("filtered_df columns:", filtered_df.columns)
+
+if "Order_Date" in filtered_df.columns:
+    # Create a line chart of sales for the selected sub-categories
+    sales_by_month = filtered_df.set_index('Order_Date').groupby(pd.Grouper(freq='M'))['Sales'].sum()
+    st.line_chart(sales_by_month)
+else:
+    print("The 'Order_Date' column is not present in the filtered dataframe.")
+    st.write("The 'Order_Date' column is not present in the filtered dataframe. Unable to create the line chart.")
 
 st.write("### (4) show three metrics (https://docs.streamlit.io/library/api-reference/data/st.metric) for the selected items in (2): total sales, total profit, and overall profit margin (%)")
 # Calculate the metrics for the selected sub-categories
