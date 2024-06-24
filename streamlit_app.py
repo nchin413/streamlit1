@@ -47,12 +47,10 @@ filtered_df = df[(df['Category'] == selected_category) & (df['Sub_Category'].isi
 # Check if the 'Order_Date' column is in the filtered_df
 if "Order_Date" in filtered_df.columns:
     filtered_df = filtered_df.set_index('Order_Date')
-else:
-    filtered_df = filtered_df
 
 # Create a line chart of sales for the selected sub-categories
-sales_by_month = filtered_df.filter(items=['Sales']).groupby(pd.Grouper(freq='M', key='Order_Date')).sum()
-st.line_chart(sales_by_month, y="Sales")
+sales_by_month = filtered_df.groupby(pd.Grouper(freq='M', key='Order_Date'))['Sales'].sum()
+st.line_chart(sales_by_month)
 
 st.write("### (4) show three metrics (https://docs.streamlit.io/library/api-reference/data/st.metric) for the selected items in (2): total sales, total profit, and overall profit margin (%)")
 # Calculate the metrics for the selected sub-categories
