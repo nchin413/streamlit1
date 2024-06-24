@@ -37,12 +37,12 @@ selected_category = st.selectbox("Select a category", categories)
 
 st.write("### (2) add a multi-select for Sub_Category *in the selected Category (1)* (https://docs.streamlit.io/library/api-reference/widgets/st.multiselect)")
 # Add a multi-select for Sub_Category based on the selected category
-sub_categories = df[df['Category'] == selected_category]['Sub-Category'].unique()
+sub_categories = df[df['Category'] == selected_category]['Sub_Category'].unique()
 selected_sub_categories = st.multiselect("Select sub-categories", sub_categories)
 
 st.write("### (3) show a line chart of sales for the selected items in (2)")
 # Filter the dataframe based on the selected sub-categories
-filtered_df = df[(df['Category'] == selected_category) & (df['Sub-Category'].isin(selected_sub_categories))]
+filtered_df = df[(df['Category'] == selected_category) & (df['Sub_Category'].isin(selected_sub_categories))]
 
 # Create a line chart of sales for the selected sub-categories
 sales_by_month = filtered_df.filter(items=['Sales']).groupby(pd.Grouper(freq='M', key='Order_Date')).sum()
