@@ -45,34 +45,15 @@ st.write("### (3) show a line chart of sales for the selected items in (2)")
 filtered_df = df[(df['Category'] == selected_category) & (df['Sub_Category'].isin(selected_sub_categories))]
 
 print("filtered_df columns:", filtered_df.columns)
-print("Number of rows in filtered_df:", len(filtered_df))
 
-if "Order_Date" in filtered_df.columns and "Sales" in filtered_df.columns:
-    # Convert Order_Date to datetime if it's not already
-    filtered_df['Order_Date'] = pd.to_datetime(filtered_df['Order_Date'])
-    
+if "Order_Date" in filtered_df.columns:
     # Create a line chart of sales for the selected sub-categories
-    sales_by_month = filtered_df.groupby(filtered_df['Order_Date'].dt.to_period('M'))['Sales'].sum()
-    
-    # Print the first few rows of sales_by_month
-    print("First few rows of sales_by_month:")
-    print(sales_by_month.head())
-    
-    # Create the plot
-    plt.figure(figsize=(12, 6))
-    sales_by_month.plot(kind='line')
-    
-    plt.title(f'Monthly Sales for {selected_category} - {", ".join(selected_sub_categories)}')
-    plt.xlabel('Date')
-    plt.ylabel('Sales')
-    plt.xticks(rotation=45)
-    
-    # Show the plot
-    plt.tight_layout()
-    plt.show()
+    sales_by_month = filtered_df.set_index('Order_Date').groupby(pd.Grouper(freq='M'))['Sales'].sum()
+    st.line_chart(sales_by_month)
 else:
-    print("The 'Order_Date' or 'Sales' column is not present in the filtered dataframe.")
-    print("Unable to create the line chart.")
+    print("The 'Order_Date' column is not present in the filtered dataframe.")
+    st.write("The 'Order_Date' column is not present in the filtered dataframe. Unable to create the line chart.")
+
 
 
 
