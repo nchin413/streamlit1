@@ -42,27 +42,15 @@ selected_sub_categories = st.multiselect("Select sub-categories", sub_categories
 
 st.write("### (3) show a line chart of sales for the selected items in (2)")
 
-# Assuming df is your DataFrame and selected_category, selected_sub_categories are defined
-
-# Step 1: Filter the DataFrame based on selected_category and selected_sub_categories
 filtered_df = df[(df['Category'] == selected_category) & (df['Sub_Category'].isin(selected_sub_categories))]
 
-# Step 2: Debugging output to check columns in filtered_df
 print("filtered_df columns:", filtered_df.columns)
 
-# Step 3: Check if 'Order_Date' column exists in the filtered DataFrame
-if 'Order_Date' in filtered_df.columns:
-    # Step 4: Convert 'Order_Date' to datetime format if it's not already
-    if not pd.api.types.is_datetime64_any_dtype(filtered_df['Order_Date']):
-        filtered_df['Order_Date'] = pd.to_datetime(filtered_df['Order_Date'])
-    
-    # Step 5: Group by month and sum sales
-    sales_by_month = filtered_df.groupby(pd.Grouper(key='Order_Date', freq='M'))['Sales'].sum()
-    
-    # Step 6: Display line chart using Streamlit
+if "Order_Date" in filtered_df.columns:
+    # Create a line chart of sales for the selected sub-categories
+    sales_by_month = filtered_df.set_index('Order_Date').groupby(pd.Grouper(freq='M'))['Sales'].sum()
     st.line_chart(sales_by_month)
 else:
-    # If 'Order_Date' column is not present in the filtered DataFrame
     print("The 'Order_Date' column is not present in the filtered dataframe.")
     st.write("The 'Order_Date' column is not present in the filtered dataframe. Unable to create the line chart.")
 
