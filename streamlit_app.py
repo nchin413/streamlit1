@@ -41,29 +41,18 @@ sub_categories = df[df['Category'] == selected_category]['Sub_Category'].unique(
 selected_sub_categories = st.multiselect("Select sub-categories", sub_categories)
 
 st.write("### (3) show a line chart of sales for the selected items in (2)")
-# Filter the dataframe based on the selected sub-categories
-categories_of_interest = ['Furniture', 'Office Supplies', 'Technology']
-filtered_df = superstore_df[superstore_df['Category'].isin(categories_of_interest)]
-grouped_df = filtered_df.groupby(['Category', pd.Grouper(key='Order Date', freq='M')]).sum()['Sales'].reset_index()
-plt.figure(figsize=(12, 8))
+filtered_df = df[(df['Category'] == selected_category) & (df['Sub_Category'].isin(selected_sub_categories))]
 
-# Iterate over each category and plot its sales
-for category in categories_of_interest:
-    category_data = grouped_df[grouped_df['Category'] == category]
-    plt.plot(category_data['Order Date'], category_data['Sales'], label=category, marker='o', linestyle='-')
+print("filtered_df columns:", filtered_df.columns)
 
-plt.title('Monthly Sales of Furniture, Office Supplies, and Technology')
-plt.xlabel('Order Date')
-plt.ylabel('Sales ($)')
-plt.legend()
-plt.grid(True)
-plt.tight_layout()
+if "Order_Date" in filtered_df.columns:
+    # Create a line chart of sales for the selected sub-categories
+    sales_by_month = filtered_df.set_index('Order_Date').groupby(pd.Grouper(freq='M'))['Sales'].sum()
+    st.line_chart(sales_by_month)
+else:
+    print("The 'Order_Date' column is not present in the filtered dataframe.")
+    st.write("The 'Order_Date' column is not present in the filtered dataframe. Unable to create the line chart.")
 
-# Save the plot as a PNG file in the GitHub repository
-plt.savefig('superstore_sales.png')
-
-# Show the plot
-plt.show()
 
 st.write("### (4) show three metrics (https://docs.streamlit.io/library/api-reference/data/st.metric) for the selected items in (2): total sales, total profit, and overall profit margin (%)")
 # Calculate the metrics for the selected sub-categories
