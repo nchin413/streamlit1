@@ -46,18 +46,15 @@ filtered_df = df[(df['Category'] == selected_category) & (df['Sub_Category'].isi
 
 print("filtered_df columns:", filtered_df.columns)
 
-if 'Order Date' in filtered_df.columns:  # Note: Changed from 'Order_Date' to 'Order Date'
-    # Convert 'Order Date' to datetime if it's not already
-    filtered_df['Order Date'] = pd.to_datetime(filtered_df['Order Date'])
-    
+if "Order_Date" in filtered_df.columns:
     # Create a line chart of sales for the selected sub-categories
-    sales_by_month = filtered_df.set_index('Order Date').groupby(pd.Grouper(freq='M'))['Sales'].sum().reset_index()
-    
-    # Create the line chart using Streamlit
-    st.line_chart(sales_by_month.set_index('Order Date'))
+    sales_by_month = filtered_df.set_index('Order_Date').groupby(pd.Grouper(freq='M'))['Sales'].sum()
+    st.line_chart(sales_by_month)
 else:
-    print("The 'Order Date' column is not present in the filtered dataframe.")
-    st.write("The 'Order Date' column is not present in the filtered dataframe. Unable to create the line chart.")
+    print("The 'Order_Date' column is not present in the filtered dataframe.")
+    st.write("The 'Order_Date' column is not present in the filtered dataframe. Unable to create the line chart.")
+
+
 
 
 
