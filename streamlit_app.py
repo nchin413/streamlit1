@@ -42,11 +42,6 @@ selected_sub_categories = st.multiselect("Select sub-categories", sub_categories
 
 st.write("### (3) show a line chart of sales for the selected items in (2)")
 
-import pandas as pd
-import matplotlib.pyplot as plt
-
-# Assuming df is your DataFrame and you have already defined selected_category and selected_sub_categories
-
 filtered_df = df[(df['Category'] == selected_category) & (df['Sub_Category'].isin(selected_sub_categories))]
 
 print("filtered_df columns:", filtered_df.columns)
