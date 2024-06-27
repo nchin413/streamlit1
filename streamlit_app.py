@@ -41,17 +41,27 @@ sub_categories = df[df['Category'] == selected_category]['Sub_Category'].unique(
 selected_sub_categories = st.multiselect("Select sub-categories", sub_categories)
 
 st.write("### (3) show a line chart of sales for the selected items in (2)")
+
 filtered_df = df[(df['Category'] == selected_category) & (df['Sub_Category'].isin(selected_sub_categories))]
 
 print("filtered_df columns:", filtered_df.columns)
 
-if "Order_Date" in filtered_df.columns:
-    # Create a line chart of sales for the selected sub-categories
+# Check if 'Order_Date' column exists and create line chart
+if 'Order_Date' in filtered_df.columns:
+    # Convert 'Order_Date' to datetime if it's not already in datetime format
+    if not pd.api.types.is_datetime64_any_dtype(filtered_df['Order_Date']):
+        filtered_df['Order_Date'] = pd.to_datetime(filtered_df['Order_Date'])
+    
+    # Group by month and sum sales
     sales_by_month = filtered_df.set_index('Order_Date').groupby(pd.Grouper(freq='M'))['Sales'].sum()
+    
+    # Display line chart using Streamlit
     st.line_chart(sales_by_month)
 else:
+    # If 'Order_Date' column is not present
     print("The 'Order_Date' column is not present in the filtered dataframe.")
     st.write("The 'Order_Date' column is not present in the filtered dataframe. Unable to create the line chart.")
+
 
 
 st.write("### (4) show three metrics (https://docs.streamlit.io/library/api-reference/data/st.metric) for the selected items in (2): total sales, total profit, and overall profit margin (%)")
