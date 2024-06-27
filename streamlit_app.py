@@ -44,15 +44,25 @@ st.write("### (3) show a line chart of sales for the selected items in (2)")
 # Filter the dataframe based on the selected sub-categories
 categories_of_interest = ['Furniture', 'Office Supplies', 'Technology']
 filtered_df = superstore_df[superstore_df['Category'].isin(categories_of_interest)]
-grouped_df = filtered_df.groupby(['Category', 'Order Date']).sum()['Sales'].reset_index()
-# Using Seaborn for better styling (optional)
+grouped_df = filtered_df.groupby(['Category', pd.Grouper(key='Order Date', freq='M')]).sum()['Sales'].reset_index()
 plt.figure(figsize=(12, 8))
-sns.lineplot(x='Order Date', y='Sales', hue='Category', data=grouped_df, palette='colorblind', linewidth=2.5)
-plt.title('Sales of Furniture, Office Supplies, and Technology over Time')
+
+# Iterate over each category and plot its sales
+for category in categories_of_interest:
+    category_data = grouped_df[grouped_df['Category'] == category]
+    plt.plot(category_data['Order Date'], category_data['Sales'], label=category, marker='o', linestyle='-')
+
+plt.title('Monthly Sales of Furniture, Office Supplies, and Technology')
 plt.xlabel('Order Date')
 plt.ylabel('Sales ($)')
-plt.xticks(rotation=45)
+plt.legend()
+plt.grid(True)
 plt.tight_layout()
+
+# Save the plot as a PNG file in the GitHub repository
+plt.savefig('superstore_sales.png')
+
+# Show the plot
 plt.show()
 
 st.write("### (4) show three metrics (https://docs.streamlit.io/library/api-reference/data/st.metric) for the selected items in (2): total sales, total profit, and overall profit margin (%)")
