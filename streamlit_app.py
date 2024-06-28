@@ -42,20 +42,11 @@ selected_sub_categories = st.multiselect("Select sub-categories", sub_categories
 
 st.write("### (3) show a line chart of sales for the selected items in (2)")
 
-filtered_df = df[(df['Category'] == selected_category) & (df['Sub_Category'].isin(selected_sub_categories))]
-
-print("filtered_df columns:", filtered_df.columns)
-
-if "Order_Date" in filtered_df.columns:
-    # Create a line chart of sales for the selected sub-categories
-    sales_by_month = filtered_df.set_index('Order_Date').groupby(pd.Grouper(freq='M'))['Sales'].sum()
-    st.line_chart(sales_by_month)
-else:
-    print("The 'Order_Date' column is not present in the filtered dataframe.")
-    st.write("The 'Order_Date' column is not present in the filtered dataframe. Unable to create the line chart.")
-
-
-
+if selected_sub_categories:
+    filtered_df = filtered_df[filtered_df['Sub_Category'].isin(selected_sub_categories)]
+   
+sales_by_month = filtered_df.groupby(pd.Grouper(freq='M')).sum()[['Sales']]
+st.line_chart(sales_by_month)
 
 
 
