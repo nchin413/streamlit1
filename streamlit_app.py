@@ -41,6 +41,9 @@ sub_categories = df[df['Category'] == selected_category]['Sub_Category'].unique(
 selected_sub_categories = st.multiselect("Select sub-categories", sub_categories)
 
 st.write("### (3) show a line chart of sales for the selected items in (2)")
+filtered_df = df[(df['Category'] == selected_category) & (df['Sub_Category'].isin(selected_sub_categories))]
+
+print("filtered_df columns:", filtered_df.columns)
 
 if selected_sub_categories:
     filtered_df = filtered_df[filtered_df['Sub_Category'].isin(selected_sub_categories)]
