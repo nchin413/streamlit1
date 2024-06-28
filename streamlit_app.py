@@ -49,7 +49,7 @@ print("filtered_df columns:", filtered_df.columns)
 
 if "Order_Date" in filtered_df.columns:
     # Create a line chart of sales for the selected sub-categories
-    sales_by_month = filtered_df.set_index('Order_Date').groupby(pd.Grouper(freq='M'))['Sales'].sum()
+    sales_by_month = filtered_df.groupby(pd.Grouper(freq='M'))['Sales'].sum()
     st.line_chart(sales_by_month)
 else:
     print("The 'Order_Date' column is not present in the filtered dataframe.")
